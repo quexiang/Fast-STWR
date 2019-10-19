@@ -1,5 +1,6 @@
 # Fast-STWR
 Parallel Computing for Fast Spatiotemporal Weighted Regression
+
 • F-STWR, a parallel computing method, is implemented in spatiotemporal weighted regression (STWR).
 
 • A matrix splitting approach is developed for memory saving in STWR.
