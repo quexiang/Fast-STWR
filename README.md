@@ -1,4 +1,6 @@
 # Fast-STWR
+news: We are now developing a network tool for Fast-STWR. Its trial version can be accessed via http://deeptime.cloud/paleoclimate after registered.This tool is integrated in "Analysizing Data" of STWR. Due to current  “deeptime.cloud” server constraints, now you can only set running number of MPI cores max to 2.
+
 Parallel Computing for Fast Spatiotemporal Weighted Regression
 
 • F-STWR, a parallel computing method, is implemented in spatiotemporal weighted regression (STWR).
