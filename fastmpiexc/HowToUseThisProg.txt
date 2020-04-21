@@ -1,0 +1,40 @@
+   FastSTWR-MPI is an implemention of STWR based on Message Passing Interface(MPI).
+   To initial and excute the code, we need install MPICH in windows or openmpi in Linux 
+   and the mpi4py is needed.
+  
+   Parameters
+   --------------------  
+   n: number of processors for model calibration of STWR
+   Intervaldata : text file that record the list of time intervals and the first element in the list is zero.
+                  It can be a text file like below:
+                        0.000000000000000000e+00
+                        1.000000000000000000e+02
+                        1.000000000000000000e+02
+                        1.000000000000000000e+02
+                        1.000000000000000000e+02
+                  5 time interval is recorded in the text file.
+   out:  specify the directory and name where the resultfile will be output.
+   schmethod: set the search method for calibration of STWR in MPI.
+   criterion: set the criterion for model calibration.
+   schtol: set the minimum convergence value.If the difference of two value is less than this value it will be regard as same.
+   max_iter: set the maximum searching steps for model calibrition.
+   eps: a small value to make sure that the matrix have non-singular solution.eps is zero mean and very small standar variance (1.0-7)
+   family: specify the family object. underlying probability model; provides distribution-specific calculations 
+   pysal: specify whether add constant to the matrix of independent variable.
+   
+   Examples
+   --------
+   (1) if you have the faststwr-mpi.py file:
+   --------------------------------------------------------------------
+   mpi_cmd = 'mpiexec'+' -n '
+   +str(self.nproc)+' python '+ os.getcwd()+ '/mgwr/faststwr-mpi.py '
+   +' -DataFile ' +dfnames
+   +' -Intervaldata '+dftime
+   +' -out '+resultfile 
+   +' -schmethod '+self.search_method 
+   +' -criterion '+self.criterion
+   +' -schtol '+str(self.tol)
+   +' -max_iter '+str(self.max_iter)
+   +' -eps '+str(self.eps) 
+   +' -family '+str(familytpye)
+   +' --pysal' + ' --constant' 
