@@ -22,8 +22,10 @@ Step 2:You should unzip mkl_avx.zip mkl_avx2.zip mkl_avx512.zip mkl_core.zip mkl
 
 ----------------------------------------------------------------------------------------------------------------------------------------
 You can use less than 6 processors to run our FastSTWR,if you need more processors please contact us: xiangq@uidaho.edu or quexiang@fafu.edu.cn
+
 ----------------------------------------------------------------------------------------------------------------------------------------
   To use the FastSTWR, you should install the environment:
+  
 --------------------------------------------------------------------------------------------------------------------------------------
    FastSTWR-MPI is an implemention of STWR based on Message Passing Interface(MPI).
    To initial and excute the code, we need install MPICH in windows or openmpi in Linux 
@@ -31,6 +33,7 @@ You can use less than 6 processors to run our FastSTWR,if you need more processo
   
    Parameters
    --------------------  
+   
    n: number of processors for model calibration of STWR
    Intervaldata : text file that record the list of time intervals and the first element in the list is zero.
                   It can be a text file like below:
@@ -51,7 +54,9 @@ You can use less than 6 processors to run our FastSTWR,if you need more processo
    
    Examples
    --------
+   
    (1) if you have the faststwr-mpi.py file:
+   
    --------------------------------------------------------------------
    mpi_cmd = 'mpiexec'+' -n '
    +str(self.nproc)+' python '+ os.getcwd()+ '/mgwr/faststwr-mpi.py '
@@ -65,8 +70,10 @@ You can use less than 6 processors to run our FastSTWR,if you need more processo
    +' -eps '+str(self.eps) 
    +' -family '+str(familytpye)
    +' --pysal' + ' --constant' 
+   
    --------------------------------------------------------------------
    (2)if you do not have the faststwr-mpi.py file
+   
    --------------------------------------------------------------------
    step1.You should find the faststwr-mpi.exe and set it to your working directory (you can use python command "os.getcwd()" to get the directory)
    step2.You can find the function "_mpi_spt_bw" of the class "Sel_Spt_BW" in the sel_bw file, and change the  Parameters above as you want.
@@ -78,11 +85,12 @@ You can use less than 6 processors to run our FastSTWR,if you need more processo
    +self.search_method +' -criterion '+self.criterion+' -schtol '
    +str(self.tol)+' -max_iter '+str(self.max_iter)+' -eps '
    +str(self.eps) +' -family '+str(familytpye)+' --pysal' + ' --constant'
+   
    ------------------------------------------------------------------------------------------------------------------------------------- 
    How to Use FastSTWR
-   -------------------------------------------------------------------------------------------------------------------------------------
-   ### fitting ###
-   ### Please refer to the STWR model###
+   
+   ------------------------------------------------------------------------------------------------------------------------------------  
+   ### fitting ###  
    
    stwr_selector_ = Sel_Spt_BW(cal_coords_list, cal_y_list, cal_X_list,time_dif ,spherical = False)    
    optalpha,optsita,opt_btticks,opt_gwr_bw0 = stwr_selector_.search(nproc = 6) #you can change the nproc number  
@@ -101,4 +109,5 @@ You can use less than 6 processors to run our FastSTWR,if you need more processo
    
    -------------------------------------------------------------------------------------------------------------------------------------
    Thank you for your attention.If you find any bugs in codes, please don't hesitate to contact us.
+   
    -------------------------------------------------------------------------------------------------------------------------------------
