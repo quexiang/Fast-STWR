@@ -1,9 +1,7 @@
 # Fast-STWR
-
-News: 
-1.Welcome to read and comment our article "A Spatiotemporal Weighted Regression Model (STWRv1.0) for Analyzing Local Non-stationarity in Space and Time",which can be accessed via the link below:https://doi.org/10.5194/gmd-2019-292 
-
-2.We are now developing a network tool for Fast-STWR. 
+**F**aster- **S**patiotemporal **W**eighted **R**egression (Fast-STWR)
+=======================================
+Fast-Spatiotemporal Weighted Regression
 
 Parallel Computing for Fast Spatiotemporal Weighted Regression
 
