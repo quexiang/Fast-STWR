@@ -1,5 +1,5 @@
 # Fast-STWR
-**F**aster- **S**patiotemporal **W**eighted **R**egression (Fast-STWR)
+**F**ast- **S**patiotemporal **W**eighted **R**egression (Fast-STWR)
 =======================================
 Fast-Spatiotemporal Weighted Regression
 
