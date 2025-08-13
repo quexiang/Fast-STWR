@@ -1,6 +1,1 @@
-nose
-nose-progressive
-nose-exclude
-coverage
-coveralls
 pandas
