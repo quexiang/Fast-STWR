@@ -1,89 +1,5 @@
 # STWR and GWR Bandwidth selection class
-__author__ = "STWR,F-STWR is XiangQue xiangq@uidaho.edu and GWR,MGWR is Taylor Oshan Tayoshan@gmail.com"
-
-"""
-  You can use less than 6 processors to run our FastSTWR,if you need more processors please contact us: xiangq@uidaho.edu or quexiang@fafu.edu.cn
-  ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-  To use the FastSTWR, you should install the environment:
-  ---------------------------------------------------------------------------------------------------------------------------------------------------- 
-   FastSTWR-MPI is an implemention of STWR based on Message Passing Interface(MPI).
-   To initial and excute the code, we need install MPICH in windows or openmpi in Linux 
-   and the mpi4py is needed.
-  
-   Parameters
-   --------------------  
-   n: number of processors for model calibration of STWR
-   Intervaldata : text file that record the list of time intervals and the first element in the list is zero.
-                  It can be a text file like below:
-                        0.000000000000000000e+00
-                        1.000000000000000000e+02
-                        1.000000000000000000e+02
-                        1.000000000000000000e+02
-                        1.000000000000000000e+02
-                  5 time interval is recorded in the text file.
-   out:  specify the directory and name where the resultfile will be output.
-   schmethod: set the search method for calibration of STWR in MPI.
-   criterion: set the criterion for model calibration.
-   schtol: set the minimum convergence value.If the difference of two value is less than this value it will be regard as same.
-   max_iter: set the maximum searching steps for model calibrition.
-   eps: a small value to make sure that the matrix have non-singular solution.eps is zero mean and very small standar variance (1.0-7)
-   family: specify the family object. underlying probability model; provides distribution-specific calculations 
-   pysal: specify whether add constant to the matrix of independent variable.
-   
-   Examples
-   --------
-   (1) if you have the faststwr-mpi.py file:
-   --------------------------------------------------------------------
-   mpi_cmd = 'mpiexec'+' -n '
-   +str(self.nproc)+' python '+ os.getcwd()+ '/mgwr/faststwr-mpi.py '
-   +' -DataFile ' +dfnames
-   +' -Intervaldata '+dftime
-   +' -out '+resultfile 
-   +' -schmethod '+self.search_method 
-   +' -criterion '+self.criterion
-   +' -schtol '+str(self.tol)
-   +' -max_iter '+str(self.max_iter)
-   +' -eps '+str(self.eps) 
-   +' -family '+str(familytpye)
-   +' --pysal' + ' --constant' 
-   --------------------------------------------------------------------
-   (2)if you do not have the faststwr-mpi.py file
-   --------------------------------------------------------------------
-   step1.You should find the faststwr-mpi.exe and set it to your working directory (you can use python command "os.getcwd()" to get the directory)
-   step2.You can find the function "_mpi_spt_bw" of the class "Sel_Spt_BW" in the sel_bw file, and change the  Parameters above as you want.
-   
-   mpi_cmd = 'mpiexec'+' -n '+ str(self.nproc) 
-   +' ' + os.getcwd() + '/fastmpiexc/dist/faststwr-mpi/' 
-   + 'faststwr-mpi.exe' + ' -DataFile ' +dfnames+' -Intervaldata '
-   +dftime+' -out '+resultfile +' -schmethod '
-   +self.search_method +' -criterion '+self.criterion+' -schtol '
-   +str(self.tol)+' -max_iter '+str(self.max_iter)+' -eps '
-   +str(self.eps) +' -family '+str(familytpye)+' --pysal' + ' --constant'
-   ----------------------------------------------------------------------------------------------------------------------------------------------------  
-   How to Use FastSTWR
-   ----------------------------------------------------------------------------------------------------------------------------------------------------
-   ### fitting ###
-   ### Please refer to the STWR model###
-   
-   stwr_selector_ = Sel_Spt_BW(cal_coords_list, cal_y_list, cal_X_list,time_dif ,spherical = False)    
-   optalpha,optsita,opt_btticks,opt_gwr_bw0 = stwr_selector_.search(nproc = 6) #you can change the nproc number  
-   stwr_model = STWR(cal_coords_list,cal_y_list,cal_X_list,time_dif,optsita,opt_gwr_bw0,tick_nums=opt_btticks,alpha =optalpha,spherical = False,recorded=1)
-   stwr_results = stwr_model.fit()
-   print(stwr_results.summary())
-   
-   ### prediction ### 
-   stwr_scale = stwr_results.scale 
-   stwr_residuals = stwr_results.resid_response
-   
-   ###predPointList is a list of coordinates of points to predict, PreX_list is a list of X at these coordinates. ###
-   
-   pred_stwr =  stwr_model.predict(predPointList,PreX_list,stwr_scale,stwr_residuals)
-   pred_stwr_result =pred_stwr.predictions 
-   
-   ----------------------------------------------------------------------------------------------------------------------------------------------------
-   Thank you for your attention.If you find any bug of the program, please contact us!
-   ----------------------------------------------------------------------------------------------------------------------------------------------------
-"""
+__author__ = "STWR is XiangQue xiangq@uidaho.edu and GWR,MGWR is Taylor Oshan Tayoshan@gmail.com"
 
 import spreg.user_output as USER
 import numpy as np
@@ -93,7 +9,7 @@ from spglm.family import Gaussian, Poisson, Binomial
 from spglm.iwls import iwls,_compute_betas_gwr
 from .kernels import *
 from .gwr import GWR,STWR
-#from .FastSTWR import FastSTWR
+from .FastSTWR import FastSTWR
 from .search import golden_section, equal_interval, multi_bw,equal_stwr_interval,gg_stwr_section
 from .diagnostics import get_AICc, get_AIC, get_BIC, get_CV,get_Stwr_AICc,get_Stwr_CV
 from functools import partial
@@ -102,7 +18,7 @@ import sys
 import time
 import subprocess
 import os
-import faststwr
+import stwr
 from tempfile import NamedTemporaryFile
 from spglm.utils import cache_readonly
 import pickle
@@ -118,12 +34,6 @@ getDiag = {'AICc': get_AICc,'AIC':get_AIC, 'BIC': get_BIC, 'CV': get_CV,'Stwr_AI
 
 class Sel_BW(object):
     """
-    This version you can use maximum 6 cores to excute the MPI based 
-    
-    you can set 
-    
-    search 
-    
     Select bandwidth for kernel
 
     Methods: p211 - p213, bandwidth selection
@@ -740,13 +650,9 @@ class Sel_Spt_BW(object):
                                     familytpye = 0
             elif isinstance(self.family, (Poisson, Binomial)):
                                     familytpye = 1 
-
-            #openmpi 4.0.2  command mpiexec -np/ --np / -c
-            #mpi_cmd = 'mpiexec'+' -np '+str(self.nproc)+' python '+ os.getcwd()+ '/stwr/faststwr-mpi.py '+' -DataFile ' +dfnames+' -Intervaldata '+dftime+' -out '+resultfile +' -schmethod '+self.search_method +' -criterion '+self.criterion+' -schtol '+str(self.tol)+' -max_iter '+str(self.max_iter)+' -eps '+str(self.eps) +' -family '+str(familytpye)+' --pysal' + ' --constant'
-            #mpich command mpiexec -n            
-            #mpi_cmd = 'mpiexec'+' -n '+str(self.nproc)+' python '+ os.getcwd()+ '/stwr/faststwr-mpi.py '+' -DataFile ' +dfnames+' -Intervaldata '+dftime+' -out '+resultfile +' -schmethod '+self.search_method +' -criterion '+self.criterion+' -schtol '+str(self.tol)+' -max_iter '+str(self.max_iter)+' -eps '+str(self.eps) +' -family '+str(familytpye)+' --pysal' + ' --constant'
+            mpi_cmd = 'mpiexec'+' --hostfile '+ os.getcwd()+ '/faststwr/hostfile'+' -np '+str(self.nproc)+' python '+ os.getcwd()+ '/faststwr/faststwr-mpi.py '+' -DataFile ' +dfnames+' -Intervaldata '+dftime+' -out '+resultfile +' -schmethod '+self.search_method +' -criterion '+self.criterion+' -schtol '+str(self.tol)+' -max_iter '+str(self.max_iter)+' -eps '+str(self.eps) +' -family '+str(familytpye)+' --pysal' + ' --constant'
             #generate faststwr-mpi.exe 
-            mpi_cmd = 'mpiexec'+' -n '+ str(self.nproc) +' ' + os.getcwd() + '/fastmpiexc/dist/faststwr-mpi/' + 'faststwr-mpi.exe' + ' -DataFile ' +dfnames+' -Intervaldata '+dftime+' -out '+resultfile +' -schmethod '+self.search_method +' -criterion '+self.criterion+' -schtol '+str(self.tol)+' -max_iter '+str(self.max_iter)+' -eps '+str(self.eps) +' -family '+str(familytpye)+' --pysal' + ' --constant'
+#            mpi_cmd = 'mpiexec'+' -n '+ str(self.nproc) +' ' + os.getcwd() + '/fastmpiexc/dist/faststwr-mpi/' + 'faststwr-mpi.exe' + ' -DataFile ' +dfnames+' -Intervaldata '+dftime+' -out '+resultfile +' -schmethod '+self.search_method +' -criterion '+self.criterion+' -schtol '+str(self.tol)+' -max_iter '+str(self.max_iter)+' -eps '+str(self.eps) +' -family '+str(familytpye)+' --pysal' + ' --constant'
             if self.spherical:
                 mpi_cmd += ' --spherical'           
             subprocess.run(mpi_cmd, shell=True)
